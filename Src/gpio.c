@@ -10,7 +10,7 @@
   * inserted by the user or by software development tools
   * are owned by their respective copyright owners.
   *
-  * COPYRIGHT(c) 2018 STMicroelectronics
+  * COPYRIGHT(c) 2019 STMicroelectronics
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -56,7 +56,6 @@
         * Output
         * EVENT_OUT
         * EXTI
-     PC3   ------> ADCx_IN4
 */
 void MX_GPIO_Init(void)
 {
@@ -74,14 +73,16 @@ void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOC, _1_WIRE_Pin|EN_STEPUP_Pin|EN_ADC_VIN_Pin|RFDIS_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, LED2_Pin|LED1_Pin|RADIO_NRESET_Pin|EN_CAN_Pin 
-                          |EXT_GPIO_ANALOG_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, LED2_Pin|LED1_Pin|RADIO_NRESET_Pin|EN_CAN_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, EXT_GPIO_Output_Pin|BERK_CS_Pin|EN_PWR_OUT_Pin|CAN_ASC_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, EXT_GPIO_Output_Pin|BERK_CS_Pin|CAN_ASC_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(RADIO_NSS_GPIO_Port, RADIO_NSS_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, EN_RELE1_Pin|EN_RELE2_Pin|EN_PWR_OUT_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pins : PCPin PCPin PCPin PCPin 
                            PCPin PCPin */
@@ -98,22 +99,14 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : PC3 */
-  GPIO_InitStruct.Pin = GPIO_PIN_3;
-  GPIO_InitStruct.Mode = GPIO_MODE_ANALOG_ADC_CONTROL;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
   /*Configure GPIO pin : PtPin */
   GPIO_InitStruct.Pin = BERK_INT_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(BERK_INT_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PAPin PAPin PAPin PAPin 
-                           PAPin */
-  GPIO_InitStruct.Pin = LED2_Pin|LED1_Pin|RADIO_NRESET_Pin|EN_CAN_Pin 
-                          |EXT_GPIO_ANALOG_Pin;
+  /*Configure GPIO pins : PAPin PAPin PAPin PAPin */
+  GPIO_InitStruct.Pin = LED2_Pin|LED1_Pin|RADIO_NRESET_Pin|EN_CAN_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -125,12 +118,20 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(EXT_INT_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PBPin PBPin PBPin PBPin */
-  GPIO_InitStruct.Pin = EXT_GPIO_Output_Pin|BERK_CS_Pin|EN_PWR_OUT_Pin|CAN_ASC_Pin;
+  /*Configure GPIO pins : PBPin PBPin PBPin PBPin 
+                           PBPin PBPin */
+  GPIO_InitStruct.Pin = EXT_GPIO_Output_Pin|BERK_CS_Pin|EN_RELE1_Pin|EN_RELE2_Pin 
+                          |EN_PWR_OUT_Pin|CAN_ASC_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PtPin */
+  GPIO_InitStruct.Pin = EXT_GPIO_Analog_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(EXT_GPIO_Analog_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PtPin */
   GPIO_InitStruct.Pin = RADIO_NSS_Pin;

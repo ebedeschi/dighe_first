@@ -10,7 +10,7 @@
   * inserted by the user or by software development tools
   * are owned by their respective copyright owners.
   *
-  * COPYRIGHT(c) 2018 STMicroelectronics
+  * COPYRIGHT(c) 2019 STMicroelectronics
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -56,7 +56,7 @@ void MX_ADC1_Init(void)
   /**Common config 
   */
   hadc1.Instance = ADC1;
-  hadc1.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV2;
+  hadc1.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV1;
   hadc1.Init.Resolution = ADC_RESOLUTION_12B;
   hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
   hadc1.Init.ScanConvMode = ADC_SCAN_DISABLE;
@@ -103,7 +103,7 @@ void MX_ADC2_Init(void)
   /**Common config 
   */
   hadc2.Instance = ADC2;
-  hadc2.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV2;
+  hadc2.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV1;
   hadc2.Init.Resolution = ADC_RESOLUTION_12B;
   hadc2.Init.DataAlign = ADC_DATAALIGN_RIGHT;
   hadc2.Init.ScanConvMode = ADC_SCAN_DISABLE;
@@ -123,7 +123,7 @@ void MX_ADC2_Init(void)
   }
   /**Configure Regular Channel 
   */
-  sConfig.Channel = ADC_CHANNEL_4;
+  sConfig.Channel = ADC_CHANNEL_15;
   sConfig.Rank = ADC_REGULAR_RANK_1;
   sConfig.SamplingTime = ADC_SAMPLETIME_2CYCLES_5;
   sConfig.SingleDiff = ADC_SINGLE_ENDED;
@@ -141,7 +141,6 @@ static uint32_t HAL_RCC_ADC_CLK_ENABLED=0;
 void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
 {
 
-  GPIO_InitTypeDef GPIO_InitStruct = {0};
   if(adcHandle->Instance==ADC1)
   {
   /* USER CODE BEGIN ADC1_MspInit 0 */
@@ -152,16 +151,6 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
     if(HAL_RCC_ADC_CLK_ENABLED==1){
       __HAL_RCC_ADC_CLK_ENABLE();
     }
-  
-    __HAL_RCC_GPIOA_CLK_ENABLE();
-    /**ADC1 GPIO Configuration    
-    PA1     ------> ADC1_IN6 
-    */
-    GPIO_InitStruct.Pin = ADC_STEPUP_Pin;
-    GPIO_InitStruct.Mode = GPIO_MODE_ANALOG_ADC_CONTROL;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    HAL_GPIO_Init(ADC_STEPUP_GPIO_Port, &GPIO_InitStruct);
-
   /* USER CODE BEGIN ADC1_MspInit 1 */
 
   /* USER CODE END ADC1_MspInit 1 */
@@ -176,25 +165,6 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
     if(HAL_RCC_ADC_CLK_ENABLED==1){
       __HAL_RCC_ADC_CLK_ENABLE();
     }
-  
-    __HAL_RCC_GPIOC_CLK_ENABLE();
-    __HAL_RCC_GPIOA_CLK_ENABLE();
-    /**ADC2 GPIO Configuration    
-    PC3     ------> ADC2_IN4
-    PA4     ------> ADC2_IN9
-    PA5     ------> ADC2_IN10
-    PC4     ------> ADC2_IN13 
-    */
-    GPIO_InitStruct.Pin = GPIO_PIN_3|ADC_VIN_Pin;
-    GPIO_InitStruct.Mode = GPIO_MODE_ANALOG_ADC_CONTROL;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-    GPIO_InitStruct.Pin = EXT_ADC2_IN9_Pin|EXT_ADC2_IN10_Pin;
-    GPIO_InitStruct.Mode = GPIO_MODE_ANALOG_ADC_CONTROL;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
   /* USER CODE BEGIN ADC2_MspInit 1 */
 
   /* USER CODE END ADC2_MspInit 1 */
@@ -214,12 +184,6 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
     if(HAL_RCC_ADC_CLK_ENABLED==0){
       __HAL_RCC_ADC_CLK_DISABLE();
     }
-  
-    /**ADC1 GPIO Configuration    
-    PA1     ------> ADC1_IN6 
-    */
-    HAL_GPIO_DeInit(ADC_STEPUP_GPIO_Port, ADC_STEPUP_Pin);
-
   /* USER CODE BEGIN ADC1_MspDeInit 1 */
 
   /* USER CODE END ADC1_MspDeInit 1 */
@@ -234,17 +198,6 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
     if(HAL_RCC_ADC_CLK_ENABLED==0){
       __HAL_RCC_ADC_CLK_DISABLE();
     }
-  
-    /**ADC2 GPIO Configuration    
-    PC3     ------> ADC2_IN4
-    PA4     ------> ADC2_IN9
-    PA5     ------> ADC2_IN10
-    PC4     ------> ADC2_IN13 
-    */
-    HAL_GPIO_DeInit(GPIOC, GPIO_PIN_3|ADC_VIN_Pin);
-
-    HAL_GPIO_DeInit(GPIOA, EXT_ADC2_IN9_Pin|EXT_ADC2_IN10_Pin);
-
   /* USER CODE BEGIN ADC2_MspDeInit 1 */
 
   /* USER CODE END ADC2_MspDeInit 1 */

@@ -161,17 +161,16 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_ADC1_Init();
-  MX_ADC2_Init();
   MX_CAN1_Init();
   MX_I2C2_Init();
-  MX_OPAMP1_Init();
-  MX_OPAMP2_Init();
   MX_RTC_Init();
   MX_SPI1_Init();
   MX_SPI2_Init();
-  MX_USART1_UART_Init();
   MX_USART3_UART_Init();
+  MX_OPAMP1_Init();
+  MX_ADC1_Init();
+  MX_OPAMP2_Init();
+  MX_ADC2_Init();
   /* USER CODE BEGIN 2 */
 
   HAL_OPAMP_Start(&hopamp1);
@@ -190,13 +189,27 @@ int main(void)
 
   HAL_GPIO_WritePin(EN_STEPUP_GPIO_Port, EN_STEPUP_Pin, GPIO_PIN_RESET);
 //  HAL_GPIO_WritePin(EN_STEPUP_GPIO_Port, EN_STEPUP_Pin, GPIO_PIN_SET);
+////  HAL_GPIO_WritePin(EN_STEPUP_GPIO_Port, EN_STEPUP_Pin, GPIO_PIN_RESET);
+////  HAL_GPIO_WritePin(EN_STEPUP_GPIO_Port, EN_STEPUP_Pin, GPIO_PIN_SET);
+////  HAL_GPIO_WritePin(EN_STEPUP_GPIO_Port, EN_STEPUP_Pin, GPIO_PIN_RESET);
+//
+//  HAL_GPIO_WritePin(EN_PWR_OUT_GPIO_Port, EN_PWR_OUT_Pin, GPIO_PIN_SET);
+//  HAL_GPIO_WritePin(EN_PWR_OUT_GPIO_Port, EN_PWR_OUT_Pin, GPIO_PIN_RESET);
+////  HAL_GPIO_WritePin(EN_PWR_OUT_GPIO_Port, EN_PWR_OUT_Pin, GPIO_PIN_SET);
+////  HAL_GPIO_WritePin(EN_PWR_OUT_GPIO_Port, EN_PWR_OUT_Pin, GPIO_PIN_RESET);
+//
+//  HAL_GPIO_WritePin(EN_RELE1_GPIO_Port, EN_RELE1_Pin, GPIO_PIN_RESET);
+//  HAL_GPIO_WritePin(EN_RELE1_GPIO_Port, EN_RELE1_Pin, GPIO_PIN_SET);
+//
+//  HAL_GPIO_WritePin(EN_RELE2_GPIO_Port, EN_RELE2_Pin, GPIO_PIN_RESET);
+//  HAL_GPIO_WritePin(EN_RELE2_GPIO_Port, EN_RELE2_Pin, GPIO_PIN_SET);
+//
+//  HAL_GPIO_WritePin(EN_PWR_OUT_GPIO_Port, EN_PWR_OUT_Pin, GPIO_PIN_SET);
+//
 //  HAL_GPIO_WritePin(EN_STEPUP_GPIO_Port, EN_STEPUP_Pin, GPIO_PIN_RESET);
-//  HAL_GPIO_WritePin(EN_STEPUP_GPIO_Port, EN_STEPUP_Pin, GPIO_PIN_SET);
-//  HAL_GPIO_WritePin(EN_STEPUP_GPIO_Port, EN_STEPUP_Pin, GPIO_PIN_RESET);
-//  HAL_GPIO_WritePin(EN_STEPUP_GPIO_Port, EN_STEPUP_Pin, GPIO_PIN_SET);
-//  HAL_GPIO_WritePin(EN_STEPUP_GPIO_Port, EN_STEPUP_Pin, GPIO_PIN_RESET);
-//  HAL_GPIO_WritePin(EN_STEPUP_GPIO_Port, EN_STEPUP_Pin, GPIO_PIN_SET);
-//  HAL_GPIO_WritePin(EN_STEPUP_GPIO_Port, EN_STEPUP_Pin, GPIO_PIN_RESET);
+//
+//  HAL_GPIO_WritePin(EN_RELE2_GPIO_Port, EN_RELE1_Pin, GPIO_PIN_RESET);
+//  HAL_GPIO_WritePin(EN_RELE2_GPIO_Port, EN_RELE1_Pin, GPIO_PIN_SET);
 
 //	uint16_t sT, sH;
 //	float   temperatureC, humidityH;           //variable for temperature[°C] as float
@@ -270,19 +283,37 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-	 uint16_t vin = 0;
+	 uint16_t s = 0;
 	 uint8_t res = 0;
-//	 HAL_GPIO_WritePin(EN_STEPUP_GPIO_Port, EN_STEPUP_Pin, GPIO_PIN_SET);
-//	 HAL_Delay(500);
-//	 res = get420(&vin);
-//	 if(res == 0)
-//	 {
-//		sprintf(data,"VIN ADC: %d", vin);
-//		PRINTF("%s\n", data);
-//		sprintf(data,"VIN I: %f", (float)((double)vin)*0.000008824359940);
-//		PRINTF("%s\n", data);
-//	 }
-//	 HAL_GPIO_WritePin(EN_STEPUP_GPIO_Port, EN_STEPUP_Pin, GPIO_PIN_RESET);
+	 HAL_GPIO_WritePin(EN_STEPUP_GPIO_Port, EN_STEPUP_Pin, GPIO_PIN_SET);
+	 HAL_Delay(500);
+	 HAL_GPIO_WritePin(EN_PWR_OUT_GPIO_Port, EN_PWR_OUT_Pin, GPIO_PIN_RESET);
+	 HAL_Delay(100);
+	 res = get420(&s);
+	 HAL_Delay(100);
+	 if(res == 0)
+	 {
+		sprintf(data,"S1 ADC: %d", s);
+		PRINTF("%s\n", data);
+		sprintf(data,"S1 I: %f", (float)((double)s)*0.000008824359940);
+		PRINTF("%s\n", data);
+	 }
+	 HAL_GPIO_WritePin(EN_RELE2_GPIO_Port, EN_RELE2_Pin, GPIO_PIN_RESET);
+	 HAL_Delay(500);
+	 res = get420(&s);
+	 HAL_Delay(100);
+	 if(res == 0)
+	 {
+		sprintf(data,"S2 ADC: %d", s);
+		PRINTF("%s\n", data);
+		sprintf(data,"S2 I: %f", (float)((double)s)*0.000008824359940);
+		PRINTF("%s\n", data);
+	 }
+	 HAL_GPIO_WritePin(EN_RELE2_GPIO_Port, EN_RELE2_Pin, GPIO_PIN_SET);
+	 HAL_Delay(100);
+	 HAL_GPIO_WritePin(EN_PWR_OUT_GPIO_Port, EN_PWR_OUT_Pin, GPIO_PIN_SET);
+	 HAL_Delay(100);
+	 HAL_GPIO_WritePin(EN_STEPUP_GPIO_Port, EN_STEPUP_Pin, GPIO_PIN_RESET);
 
 	/*
 	 * Read output only if new value is available
@@ -327,7 +358,7 @@ int main(void)
 	  PRINTF("%s\n", data);
 	}
 
-	  HAL_Delay(1000);
+	  HAL_Delay(10000);
   }
   /* USER CODE END 3 */
 }
@@ -375,10 +406,8 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_RTC|RCC_PERIPHCLK_USART1
-                              |RCC_PERIPHCLK_USART3|RCC_PERIPHCLK_I2C2
-                              |RCC_PERIPHCLK_ADC;
-  PeriphClkInit.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK2;
+  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_RTC|RCC_PERIPHCLK_USART3
+                              |RCC_PERIPHCLK_I2C2|RCC_PERIPHCLK_ADC;
   PeriphClkInit.Usart3ClockSelection = RCC_USART3CLKSOURCE_PCLK1;
   PeriphClkInit.I2c2ClockSelection = RCC_I2C2CLKSOURCE_PCLK1;
   PeriphClkInit.AdcClockSelection = RCC_ADCCLKSOURCE_PLLSAI1;

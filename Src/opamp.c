@@ -10,7 +10,7 @@
   * inserted by the user or by software development tools
   * are owned by their respective copyright owners.
   *
-  * COPYRIGHT(c) 2018 STMicroelectronics
+  * COPYRIGHT(c) 2019 STMicroelectronics
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -106,7 +106,7 @@ void HAL_OPAMP_MspInit(OPAMP_HandleTypeDef* opampHandle)
     PA0     ------> OPAMP1_VINP
     PA3     ------> OPAMP1_VOUT 
     */
-    GPIO_InitStruct.Pin = OPAMP1_ANALOG1_Pin|OPAMP1_VOUT_Pin;
+    GPIO_InitStruct.Pin = OPAMP1_ANALOG1_Pin|GPIO_PIN_3;
     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
@@ -137,15 +137,15 @@ void HAL_OPAMP_MspInit(OPAMP_HandleTypeDef* opampHandle)
     PA6     ------> OPAMP2_VINP
     PB0     ------> OPAMP2_VOUT 
     */
-    GPIO_InitStruct.Pin = OPAMP2_ANALOG2_Pin;
+    GPIO_InitStruct.Pin = OPAMP1_ANALOG2_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
-    HAL_GPIO_Init(OPAMP2_ANALOG2_GPIO_Port, &GPIO_InitStruct);
+    HAL_GPIO_Init(OPAMP1_ANALOG2_GPIO_Port, &GPIO_InitStruct);
 
-    GPIO_InitStruct.Pin = OPAMP2_VOUT_Pin;
+    GPIO_InitStruct.Pin = GPIO_PIN_0;
     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
-    HAL_GPIO_Init(OPAMP2_VOUT_GPIO_Port, &GPIO_InitStruct);
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /* USER CODE BEGIN OPAMP2_MspInit 1 */
 
@@ -171,7 +171,7 @@ void HAL_OPAMP_MspDeInit(OPAMP_HandleTypeDef* opampHandle)
     PA0     ------> OPAMP1_VINP
     PA3     ------> OPAMP1_VOUT 
     */
-    HAL_GPIO_DeInit(GPIOA, OPAMP1_ANALOG1_Pin|OPAMP1_VOUT_Pin);
+    HAL_GPIO_DeInit(GPIOA, OPAMP1_ANALOG1_Pin|GPIO_PIN_3);
 
   /* USER CODE BEGIN OPAMP1_MspDeInit 1 */
 
@@ -192,9 +192,9 @@ void HAL_OPAMP_MspDeInit(OPAMP_HandleTypeDef* opampHandle)
     PA6     ------> OPAMP2_VINP
     PB0     ------> OPAMP2_VOUT 
     */
-    HAL_GPIO_DeInit(OPAMP2_ANALOG2_GPIO_Port, OPAMP2_ANALOG2_Pin);
+    HAL_GPIO_DeInit(OPAMP1_ANALOG2_GPIO_Port, OPAMP1_ANALOG2_Pin);
 
-    HAL_GPIO_DeInit(OPAMP2_VOUT_GPIO_Port, OPAMP2_VOUT_Pin);
+    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_0);
 
   /* USER CODE BEGIN OPAMP2_MspDeInit 1 */
 
