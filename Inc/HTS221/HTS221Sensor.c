@@ -65,11 +65,6 @@ void HTS221Sensor(void* handle, uint8_t address)
   {
     return;
   }
-
-  if(HTS221SensorSetODR(1.0f) == HTS221_STATUS_ERROR)
-  {
-    return;
-  }
 }
 
 /**
@@ -78,6 +73,34 @@ void HTS221Sensor(void* handle, uint8_t address)
  */
 HTS221StatusTypeDef HTS221SensorEnable(void)
 {
+
+  if ( HTS221_Set_PowerDownMode(_handle, HTS221_SET) == HTS221_ERROR )
+  {
+    return HTS221_STATUS_ERROR;
+  }
+
+  if ( HTS221_Set_Odr(_handle, HTS221_ODR_12_5HZ) == HTS221_ERROR )
+  {
+    return HTS221_STATUS_ERROR;
+  }
+
+  if ( HTS221_MemoryBoot(_handle) == HTS221_ERROR )
+  {
+    return HTS221_STATUS_ERROR;
+  }
+
+  /* Set Temperature Resolution */
+  if( HTS221_Set_AvgT(_handle, HTS221_AVGT_128) == HTS221_ERROR )
+  {
+	return HTS221_STATUS_ERROR;
+  }
+
+  /* Set Humidity Resolution */
+  if( HTS221_Set_AvgH(_handle, HTS221_AVGH_64) == HTS221_ERROR )
+  {
+	return HTS221_STATUS_ERROR;
+  }
+
   /* Power up the device */
   if ( HTS221_Activate( _handle ) == HTS221_ERROR )
   {
@@ -160,7 +183,7 @@ HTS221StatusTypeDef HTS221SensorGetHumidity(float* pfData)
     return HTS221_STATUS_ERROR;
   }
 
-  *pfData = ( float )uint16data / 10.0f;
+  *pfData = ( float )uint16data / 100.0f;
 
   return HTS221_STATUS_OK;
 }
@@ -180,7 +203,7 @@ HTS221StatusTypeDef HTS221SensorGetTemperature(float* pfData)
     return HTS221_STATUS_ERROR;
   }
 
-  *pfData = ( float )int16data / 10.0f;
+  *pfData = ( float )int16data / 100.0f;
 
   return HTS221_STATUS_OK;
 }
@@ -298,34 +321,12 @@ uint8_t HTS221_IO_Read( void *handle, uint8_t ReadAddr, uint8_t *pBuffer, uint16
  */
 uint8_t IO_Read(void* handle, uint8_t* pBuffer, uint8_t RegisterAddr, uint16_t NumByteToRead)
 {
-//      dev_i2c->beginTransmission(((uint8_t)(((address) >> 1) & 0x7F)));
-//      dev_i2c->write(RegisterAddr);
-//      dev_i2c->endTransmission(false);
-//
-//      dev_i2c->requestFrom(((uint8_t)(((address) >> 1) & 0x7F)), (byte) NumByteToRead);
-//
-//      int i=0;
-//      while (dev_i2c->available())
-//      {
-//        pBuffer[i] = dev_i2c->read();
-//        i++;
-//      }
-
-	char data[50];
-  if (handle == &hi2c2)
-  {
-	   flag += HAL_I2C_Mem_Read(handle, ((uint8_t)(((_address) >> 1) & 0x7F)), RegisterAddr,
-				I2C_MEMADD_SIZE_8BIT, pBuffer, NumByteToRead, 3000);
-
-	   vcom_Send("-- %d -- ", RegisterAddr);
-	   for(int i=0;i<NumByteToRead;i++)
-	   {
-		   sprintf((char*)data, "%d", pBuffer[i] );
-		   vcom_Send("%s ", data);
-	   }
-	   vcom_Send("\n", data);
-  }
-  return 0;
+	HAL_StatusTypeDef status = HAL_ERROR;
+	if (handle == &hi2c2)
+	{
+	  status = HAL_I2C_Mem_Read((I2C_HandleTypeDef*)handle, (uint8_t)_address, (uint16_t)RegisterAddr, I2C_MEMADD_SIZE_8BIT, pBuffer, NumByteToRead, 1000);
+	}
+	return status;
 }
 
 /**
@@ -337,18 +338,11 @@ uint8_t IO_Read(void* handle, uint8_t* pBuffer, uint8_t RegisterAddr, uint16_t N
  */
 uint8_t IO_Write(void* handle, uint8_t* pBuffer, uint8_t RegisterAddr, uint16_t NumByteToWrite)
 {
-//      dev_i2c->beginTransmission(((uint8_t)(((address) >> 1) & 0x7F)));
-//
-//      dev_i2c->write(RegisterAddr);
-//      for (int i = 0 ; i < NumByteToWrite ; i++)
-//        dev_i2c->write(pBuffer[i]);
-//
-//      dev_i2c->endTransmission(true);
+  HAL_StatusTypeDef status = HAL_ERROR;
 
   if (handle == &hi2c2)
   {
-	  HAL_I2C_Mem_Write(handle, ((uint8_t)(((_address) >> 1) & 0x7F)), RegisterAddr,
-			  I2C_MEMADD_SIZE_8BIT, pBuffer, NumByteToWrite, 1000);
+	  status = HAL_I2C_Mem_Write((I2C_HandleTypeDef*)handle, (uint8_t)_address, (uint16_t)RegisterAddr, I2C_MEMADD_SIZE_8BIT, pBuffer, NumByteToWrite, 1000);
   }
-  return 0;
+  return status;
 }

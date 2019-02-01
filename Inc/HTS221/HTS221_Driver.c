@@ -63,8 +63,6 @@
 extern uint8_t HTS221_IO_Write( void *handle, uint8_t WriteAddr, uint8_t *pBuffer, uint16_t nBytesToWrite );
 extern uint8_t HTS221_IO_Read( void *handle, uint8_t ReadAddr, uint8_t *pBuffer, uint16_t nBytesToRead );
 
-extern int16_t _tout, _tout0, _tout1;;
-
 /**
 * @}
 */
@@ -334,9 +332,9 @@ HTS221_Error_et HTS221_Get_Humidity(void *handle, uint16_t* value)
   H_T_out = (((uint16_t)buffer[1]) << 8) | (uint16_t)buffer[0];
 
   tmp_f = (float)(H_T_out - H0_T0_out) * (float)(H1_rh - H0_rh) / (float)(H1_T0_out - H0_T0_out)  +  H0_rh;
-  tmp_f *= 10.0f;
+  tmp_f *= 100.0f;
 
-  *value = ( tmp_f > 1000.0f ) ? 1000
+  *value = ( tmp_f > 10000.0f ) ? 10000
            : ( tmp_f <    0.0f ) ?    0
            : ( uint16_t )tmp_f;
 
@@ -395,13 +393,8 @@ HTS221_Error_et HTS221_Get_Temperature(void *handle, int16_t *value)
 
   T_out = (((uint16_t)buffer[1]) << 8) | (uint16_t)buffer[0];
 
-  _tout = T_out;
-  _tout0 = T0_degC_x8_u16;
-  _tout1 = T1_degC_x8_u16;
-
-
   tmp_f = (float)(T_out - T0_out) * (float)(T1_degC - T0_degC) / (float)(T1_out - T0_out)  +  T0_degC;
-  tmp_f *= 10.0f;
+  tmp_f *= 100.0f;
 
   *value = ( int16_t )tmp_f;
 

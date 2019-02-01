@@ -54,7 +54,7 @@
 #include "ism330dlc/ism330dlc_reg.h"
 #include "SHT2x/SHT2x.h"
 #include "HTS221/HTS221Sensor.h"
-#include "HTS221/HTS221_Driver.h"
+#include "HTS221/HTS221.h"
 #include "voltage/voltage.h"
 #include <stdio.h>
 #include <stdarg.h>
@@ -87,8 +87,6 @@ static float acceleration_mg[3];
 static float angular_rate_mdps[3];
 static float temperature_degC;
 static uint8_t whoamI, rst;
-uint8_t flag;
-int16_t _tout, _tout0, _tout1;
 
 char data[50];
 /* USER CODE END PV */
@@ -218,15 +216,7 @@ int main(void)
 
   HTS221Sensor(&hi2c2, HTS221_I2C_ADDRESS);
   HTS221SensorEnable();
-//  HTS221SensorSetODR(1.0f);
-//  HTS221SensorReset();
-//  uint8_t err = 0;
-//  flag = 0;
-//  uint8_t id = 0;
-//  err = HTS221SensorReadID(&id);
-//  sprintf((char*)data, "%d %d id: %d\r\n", flag, err, id );
-//  PRINTF("%s\n", data);
-
+//  HTS221_Init();
 
   ism330dlc_ctx_t dev_ctx;
   dev_ctx.write_reg = platform_write;
@@ -290,37 +280,37 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-	 uint16_t s = 0;
-	 uint8_t res = 0;
-	 HAL_GPIO_WritePin(EN_STEPUP_GPIO_Port, EN_STEPUP_Pin, GPIO_PIN_SET);
-	 HAL_Delay(500);
-	 HAL_GPIO_WritePin(EN_PWR_OUT_GPIO_Port, EN_PWR_OUT_Pin, GPIO_PIN_RESET);
-	 HAL_Delay(100);
-	 res = get420(&s);
-	 HAL_Delay(100);
-	 if(res == 0)
-	 {
-		sprintf(data,"S1 ADC: %d", s);
-		PRINTF("%s\n", data);
-		sprintf(data,"S1 I: %f", (float)((double)s)*0.000008824359940);
-		PRINTF("%s\n", data);
-	 }
-	 HAL_GPIO_WritePin(EN_RELE2_GPIO_Port, EN_RELE2_Pin, GPIO_PIN_RESET);
-	 HAL_Delay(1000);
-	 res = get420(&s);
-	 HAL_Delay(100);
-	 if(res == 0)
-	 {
-		sprintf(data,"S2 ADC: %d", s);
-		PRINTF("%s\n", data);
-		sprintf(data,"S2 I: %f", (float)((double)s)*0.000008824359940);
-		PRINTF("%s\n", data);
-	 }
-	 HAL_GPIO_WritePin(EN_RELE2_GPIO_Port, EN_RELE2_Pin, GPIO_PIN_SET);
-	 HAL_Delay(100);
-	 HAL_GPIO_WritePin(EN_PWR_OUT_GPIO_Port, EN_PWR_OUT_Pin, GPIO_PIN_SET);
-	 HAL_Delay(100);
-	 HAL_GPIO_WritePin(EN_STEPUP_GPIO_Port, EN_STEPUP_Pin, GPIO_PIN_RESET);
+//	 uint16_t s = 0;
+//	 uint8_t res = 0;
+//	 HAL_GPIO_WritePin(EN_STEPUP_GPIO_Port, EN_STEPUP_Pin, GPIO_PIN_SET);
+//	 HAL_Delay(500);
+//	 HAL_GPIO_WritePin(EN_PWR_OUT_GPIO_Port, EN_PWR_OUT_Pin, GPIO_PIN_RESET);
+//	 HAL_Delay(100);
+//	 res = get420(&s);
+//	 HAL_Delay(100);
+//	 if(res == 0)
+//	 {
+//		sprintf(data,"S1 ADC: %d", s);
+//		PRINTF("%s\n", data);
+//		sprintf(data,"S1 I: %f", (float)((double)s)*0.000008824359940);
+//		PRINTF("%s\n", data);
+//	 }
+//	 HAL_GPIO_WritePin(EN_RELE2_GPIO_Port, EN_RELE2_Pin, GPIO_PIN_RESET);
+//	 HAL_Delay(1000);
+//	 res = get420(&s);
+//	 HAL_Delay(100);
+//	 if(res == 0)
+//	 {
+//		sprintf(data,"S2 ADC: %d", s);
+//		PRINTF("%s\n", data);
+//		sprintf(data,"S2 I: %f", (float)((double)s)*0.000008824359940);
+//		PRINTF("%s\n", data);
+//	 }
+//	 HAL_GPIO_WritePin(EN_RELE2_GPIO_Port, EN_RELE2_Pin, GPIO_PIN_SET);
+//	 HAL_Delay(100);
+//	 HAL_GPIO_WritePin(EN_PWR_OUT_GPIO_Port, EN_PWR_OUT_Pin, GPIO_PIN_SET);
+//	 HAL_Delay(100);
+//	 HAL_GPIO_WritePin(EN_STEPUP_GPIO_Port, EN_STEPUP_Pin, GPIO_PIN_RESET);
 
 //	uint16_t sT, sH;
 //	float temperatureC, humidityH;           //variable for temperature[°C] as float
@@ -334,36 +324,31 @@ int main(void)
 //	sprintf((char*)data, "H: %6.2f\r\n", humidityH );
 //	PRINTF("%s\n", data);
 
-//	  uint8_t err = 0;
-//	  flag = 0;
-//	  uint8_t id = 0;
-//	  err = HTS221SensorReadID(&id);
-//	  sprintf((char*)data, "%d %d id: %d\r\n", flag, err, id );
-//	  PRINTF("%s\n", data);
-//	  err = 0;
-//	  flag = 0;
-//	  float temp = 5;
-//	  err = HTS221SensorGetTemperature(&temp);
-//	  sprintf((char*)data, "%d %d Temp: %6.2f\r\n", flag, err, temp );
-//	  PRINTF("%s\n", data);
-//	  sprintf((char*)data, "tout: %d\r\n", _tout );
-//	  PRINTF("%s\n", data);
-//	  sprintf((char*)data, "tout0: %d\r\n", _tout0 );
-//	  PRINTF("%s\n", data);
-//	  sprintf((char*)data, "tout1: %d\r\n", _tout1 );
-//	  PRINTF("%s\n", data);
-//	  err = 0;
-//	  flag = 0;
-//	  float hum = 0;
-//	  err = HTS221SensorGetHumidity(&hum);
-//	  sprintf((char*)data, "%d %d Hum: %6.2f\r\n", flag, err, hum );
-//	  PRINTF("%s\n", data);
-//	  err = 0;
-//	  flag = 0;
-//	  float odr = 0;
-//	  err = HTS221SensorGetODR(&odr);
-//	  sprintf((char*)data, "%d %d odr: %6.2f\r\n", flag, err, odr );
-//	  PRINTF("%s\n", data);
+//	    float _temp, _hum;
+//	    uint8_t _id = 0;
+//	    HTS221_ReadID(&_id);
+//		sprintf((char*)data, "id: %d\r\n", _id );
+//		PRINTF("%s\n", data);
+//		HTS221_GetTemperature(&_temp);
+//		sprintf((char*)data, "T: %6.2f\r\n", _temp );
+//		PRINTF("%s\n", data);
+//		HTS221_GetHumidity(&_hum);
+//		sprintf((char*)data, "H: %6.2f\r\n", _hum );
+//		PRINTF("%s\n", data);
+
+
+	  uint8_t id = 0;
+	  HTS221SensorReadID(&id);
+	  sprintf((char*)data, "id: %d\r\n", id );
+	  PRINTF("%s\n", data);
+	  float temp = 0;
+	  HTS221SensorGetTemperature(&temp);
+	  sprintf((char*)data, "Temp: %6.2f\r\n", temp );
+	  PRINTF("%s\n", data);
+	  float hum = 0;
+	  HTS221SensorGetHumidity(&hum);
+	  sprintf((char*)data, "Hum: %6.2f\r\n", hum );
+	  PRINTF("%s\n", data);
 
 	/*
 	 * Read output only if new value is available
@@ -408,7 +393,7 @@ int main(void)
 	  PRINTF("%s\n", data);
 	}
 
-	  HAL_Delay(30000);
+	HAL_Delay(5000);
   }
   /* USER CODE END 3 */
 }

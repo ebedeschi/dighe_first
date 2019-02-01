@@ -171,7 +171,7 @@ typedef enum
 /**
 * @brief  Driver Version Info structure definition.
 */
-typedef struct
+typedef struct hts221_driverversion_st
 {
   uint8_t   Major;
   uint8_t   Minor;
@@ -182,7 +182,7 @@ typedef struct
 /**
 * @brief  HTS221 Init structure definition.
 */
-typedef struct
+typedef struct hts221_init_st
 {
   HTS221_Avgh_et        avg_h;            /*!< Humidity average */
   HTS221_Avgt_et        avg_t;            /*!< Temperature average */
