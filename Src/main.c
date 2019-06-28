@@ -54,7 +54,6 @@
 #include "ism330dlc/ism330dlc_reg.h"
 #include "SHT2x/SHT2x.h"
 #include "HTS221/HTS221Sensor.h"
-#include "HTS221/HTS221.h"
 #include "voltage/voltage.h"
 #include <stdio.h>
 #include <stdarg.h>
@@ -216,7 +215,6 @@ int main(void)
 
   HTS221Sensor(&hi2c2, HTS221_I2C_ADDRESS);
   HTS221SensorEnable();
-//  HTS221_Init();
 
   ism330dlc_ctx_t dev_ctx;
   dev_ctx.write_reg = platform_write;
@@ -324,19 +322,6 @@ int main(void)
 //	sprintf((char*)data, "H: %6.2f\r\n", humidityH );
 //	PRINTF("%s\n", data);
 
-//	    float _temp, _hum;
-//	    uint8_t _id = 0;
-//	    HTS221_ReadID(&_id);
-//		sprintf((char*)data, "id: %d\r\n", _id );
-//		PRINTF("%s\n", data);
-//		HTS221_GetTemperature(&_temp);
-//		sprintf((char*)data, "T: %6.2f\r\n", _temp );
-//		PRINTF("%s\n", data);
-//		HTS221_GetHumidity(&_hum);
-//		sprintf((char*)data, "H: %6.2f\r\n", _hum );
-//		PRINTF("%s\n", data);
-
-
 	  uint8_t id = 0;
 	  HTS221SensorReadID(&id);
 	  sprintf((char*)data, "id: %d\r\n", id );
@@ -393,7 +378,7 @@ int main(void)
 	  PRINTF("%s\n", data);
 	}
 
-	HAL_Delay(5000);
+	HAL_Delay(3000);
   }
   /* USER CODE END 3 */
 }
